@@ -11,7 +11,9 @@ import { Connection } from "mongoose";
 
 
 @Module({
-    imports: [ConfigModule.forRoot(), MongooseModule.forRoot(process.env.DBURI as string, {
+    imports: [ConfigModule.forRoot({
+        isGlobal:true
+    }), MongooseModule.forRoot(process.env.DBURI as string, {
         onConnectionCreate: (connection: Connection) => {
             connection.on('connected', () => console.log('connected'));
             connection.on('open', () => console.log('open'));

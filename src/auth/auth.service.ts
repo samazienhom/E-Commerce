@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { User } from "src/DB/models/user.model";
@@ -10,7 +10,9 @@ import { EMAIL_EVENTS, emailEmitter } from "src/common/utilis/email/email.events
 import { otp_tamplate } from "src/common/utilis/email/otp.tamplate";
 import { OtpRepo } from "src/DB/Repo/otp.repo";
 import { compareHash, createHash } from "src/common/utilis/security/hash";
-import { JwtService } from "@nestjs/jwt";
+import { JwtService as JWT } from "@nestjs/jwt";
+import { email } from "zod";
+import { JWTService } from "src/common/tokens/tokens";
 
 
 
@@ -20,7 +22,9 @@ export class AuthServices{
         private readonly userRepo:UserRepo,
         private readonly otpService:OTPService,
         private readonly otpRepo:OtpRepo,
-        private readonly jwtServices:JwtService
+        
+        // private readonly jwtService2:JWT,
+        private readonly jwtServices:JWTService
     ){ }
 
     async signup(data:User){
@@ -35,8 +39,7 @@ export class AuthServices{
             password:await createHash(password),
             name,
             gender,
-            age,
-            isConfirmed:false
+            age
         }
        })
          const otp=await this.otpService.createOtp({
@@ -80,7 +83,26 @@ export class AuthServices{
             isConfirmed:true
         })
     }
-
+    async emailConfirmation(data:{
+        otp:string,
+        email:string
+    }){
+        const isEmailExist=await this.userRepo.findByEmail(data.email)
+        if(!isEmailExist){
+            throw new NotFoundException('email not found')
+        }
+        await this.otpService.validateOtp({
+            otp:data.otp,
+            userId:isEmailExist._id,
+            type:OTPEnum.VERIFY_EMAIL
+        })
+        isEmailExist.isConfirmed=true
+        await isEmailExist.save()
+        return {
+            message:"success",
+            data:isEmailExist
+        }
+    }
     async resendOtp(data:User){
         const {email}=data
         const isEmailExist=await this.userRepo.findByEmail(email)
@@ -111,8 +133,33 @@ export class AuthServices{
         emailEmitter.publish(EMAIL_EVENTS.VERIFY_EMAIL,{to:email,subjec:"Resend OTP",html})
         return userOtp
     }
-
-    async login(data:User){
+    async resendOtp2(data:{
+        email:string
+    }){
+        const isEmailExist=await this.userRepo.findByEmail(data.email)
+        if(!isEmailExist){
+            throw new NotFoundException('user not found')
+        }
+         if(isEmailExist.isConfirmed){
+            throw new BadRequestException("User already confirmed")
+        }
+        const otp=await this.otpService.createOtp({
+            type:OTPEnum.VERIFY_EMAIL,
+            userId:isEmailExist._id
+        })
+    
+        const html=otp_tamplate({
+            otp,
+            name:isEmailExist.name,
+            subject:"Resend OTP"
+        })
+        emailEmitter.publish(EMAIL_EVENTS.VERIFY_EMAIL,{to:isEmailExist.email,subjec:"Resend OTP",html})
+        return {
+            data:{},
+            msg:"success"   
+        }
+    }
+    async login(data:User){   
        const  {email,password}=data
        const isEmailExist=await this.userRepo.findByEmail(email)
        if(!isEmailExist){
@@ -125,17 +172,32 @@ export class AuthServices{
        if(email!=isEmailExist.email||!pass){
         throw new BadRequestException("In valid cradentials")
        }
-       const payload={sub:isEmailExist._id,username:isEmailExist.name}
-       const accessToken=await this.jwtServices.signAsync(payload,{
-        expiresIn:"1h"
-       })
-       const refreshToken=await this.jwtServices.signAsync(payload,{
-        expiresIn:"7D"
-       })
-       return {
-        accessToken:accessToken,
-        refreshToken:refreshToken
-       }
+    //    const payload={sub:isEmailExist._id,username:isEmailExist.name}
+    //    const accessToken=await this.jwtServices.signAsync(payload,{
+    //     expiresIn:"1h"
+    //    })
+    //    const refreshToken=await this.jwtServices.signAsync(payload,{
+    //     expiresIn:"7D"
+    //    })
+    //    return {
+    //     accessToken:accessToken,
+    //     refreshToken:refreshToken
+    //    }
+
+    const payload={
+        _id:isEmailExist._id,
+        email:isEmailExist.email
+    }
+    const token=this.jwtServices.sign({
+        payload,
+        options:{
+            expiresIn:'15 m',
+            secret:process.env.JWT_SECRET
+        }
+    })
+    return {
+        data:{token}
+    }
     }
 
     async forgetPass(data:User){
@@ -182,5 +244,9 @@ export class AuthServices{
         await user.updateOne({
             password:await createHash(newPass)
         })
+    }
+
+    async me(){
+        
     }
 }

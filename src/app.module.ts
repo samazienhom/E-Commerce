@@ -3,10 +3,14 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AuthModule } from "src/auth/auth.module";
 import { UserModule } from "src/user/user.module";
-import { ProductsModule } from './products/products.module';
 import { ConfigModule } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Connection } from "mongoose";
+import { BrandModule } from "./Brand/brand.module";
+import { CategoryModule } from './category/category.module';
+import { ProductService } from './product/product.service';
+import { ProductController } from './product/product.controller';
+import { ProductModule } from "./product/product.module";
 
 
 
@@ -22,7 +26,7 @@ import { Connection } from "mongoose";
             connection.on('disconnecting', () => console.log('disconnecting'));[]
         }
     }),
-        AuthModule, UserModule, ProductsModule],
+        AuthModule, UserModule,BrandModule, CategoryModule, ProductModule],
     controllers: [AppController],
     providers: [AppService]
 })

@@ -1,4 +1,4 @@
-import { Controller, Post, Req, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Req, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { AuthGuard, type authReq } from 'src/common/guards/auth-guard/auth-guard.guard';
 import {  FilesInterceptor } from '@nestjs/platform-express';
@@ -27,5 +27,10 @@ export class ProductController {
             data:product
         }
 
+    }
+
+    @Get('get-all-products')
+    async getAllProducts(){
+        return {data: await this.productService.getAllProducts()}
     }
 }

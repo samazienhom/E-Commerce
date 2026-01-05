@@ -8,9 +8,12 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { Connection } from "mongoose";
 import { BrandModule } from "./Brand/brand.module";
 import { CategoryModule } from './category/category.module';
-import { ProductService } from './product/product.service';
-import { ProductController } from './product/product.controller';
 import { ProductModule } from "./product/product.module";
+import { FavoriteModule } from './favorite/favorite.module';
+import { CartModule } from './cart/cart.module';
+import { CouponModule } from './coupon/coupon.module';
+import { OrderModule } from './order/order.module';
+
 
 
 
@@ -26,7 +29,7 @@ import { ProductModule } from "./product/product.module";
             connection.on('disconnecting', () => console.log('disconnecting'));[]
         }
     }),
-        AuthModule, UserModule,BrandModule, CategoryModule, ProductModule],
+        AuthModule, UserModule,BrandModule, CategoryModule, ProductModule, FavoriteModule, CartModule, CouponModule, OrderModule],
     controllers: [AppController],
     providers: [AppService]
 })

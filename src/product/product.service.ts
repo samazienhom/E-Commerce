@@ -48,4 +48,24 @@ export class ProductService {
             })
         }
     }
+    async getAllProducts(){
+        const data=this.productRepo.find({options:{
+            populate:[
+                {
+                    path:'createdBy',
+                    select:'name'
+                },
+                {
+                    path:'brand',
+                    select:'name image'
+                },
+                {
+                    path:'category',
+                    select:'name image'
+                }
+            ]
+        }})
+        return data
+    }
+    
 }

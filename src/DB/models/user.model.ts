@@ -1,4 +1,6 @@
 import { MongooseModule, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import mongoose, { Types } from "mongoose";
+import { Product } from "./product.model";
 
 export enum GenderEnum{
     MALE="male",
@@ -46,6 +48,11 @@ export class User{
     })
     isConfirmed:boolean
 
+    @Prop({
+        type:[mongoose.Schema.Types.ObjectId],
+        ref:'product'
+    })
+    favorites:Array<Types.ObjectId>
 
 }
 

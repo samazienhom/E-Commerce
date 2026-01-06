@@ -118,21 +118,38 @@ npm run test:cov
 
 ## Project Structure
 
-`
+```
 src/
- auth/                 # Authentication module
- user/                 # User management
- product/              # Product management
- category/             # Product categories
- brand/                # Product brands
- cart/                 # Shopping cart
- order/                # Order processing
- coupon/               # Coupon system
- favorite/             # User favorites
- DB/                   # Database models and repositories
- common/               # Shared utilities, guards, interceptors
- uploads/              # File uploads directory
-`
+├── auth/                    # Authentication module
+│   ├── auth.controller.ts   # Authentication endpoints
+│   ├── auth.service.ts      # Authentication business logic
+│   ├── auth.module.ts       # Authentication module configuration
+│   ├── authDTO/             # Data Transfer Objects
+│   ├── authValidation/      # Validation schemas
+│   ├── config/              # OAuth configurations
+│   └── google/              # Google OAuth strategy
+├── user/                    # User management module
+├── product/                 # Product management module
+├── category/                # Product categories module
+├── brand/                   # Product brands module
+├── cart/                    # Shopping cart module
+├── order/                   # Order processing module
+├── coupon/                  # Coupon management module
+├── favorite/                # User favorites module
+├── DB/                      # Database layer
+│   ├── models/              # Mongoose schemas
+│   └── Repo/                # Repository pattern implementations
+├── common/                  # Shared utilities and cross-cutting concerns
+│   ├── guards/              # Authentication guards
+│   ├── interceptors/        # Request/response interceptors
+│   ├── pipes/               # Validation pipes
+│   ├── services/            # Shared services (payment, etc.)
+│   └── tokens/              # JWT token utilities
+└── uploads/                 # Static file uploads directory
+    ├── brands/              # Brand images
+    ├── category/            # Category images
+    └── products/            # Product images
+```
 
 ## Database Models
 

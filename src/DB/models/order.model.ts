@@ -49,13 +49,13 @@ export class Order {
             type:Number,
             required:true,
         })
-        salePrice:number
+        totalPrice:number
 
         @Prop({
             type:Number,
             required:true
         })
-        actualPrice:number
+        subTotal:number
         @Prop({
             type:Number,
             default:0
@@ -92,8 +92,19 @@ export class Order {
             default:OrderStatusEnum.PENDING
         })
         status:OrderStatusEnum
-
-}
+        @Prop({
+            type:String,
+        })
+        intentId:string
+          @Prop({
+            type:String,
+        })
+        refundId:string
+          @Prop({
+            type:Date,
+        })
+        refundAt:Date
+    }
 
 const orderSchema=SchemaFactory.createForClass(Order)
 export const OrderModel=MongooseModule.forFeature([{

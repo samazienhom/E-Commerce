@@ -1,4 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { type RedisClientType } from 'redis';
 import { HProduct } from 'src/DB/models/product.model';
 import { BrandRepo } from 'src/DB/Repo/brand.repo';
 import { CategoryRepo } from 'src/DB/Repo/category.repo';
@@ -8,7 +9,8 @@ export class ProductService {
     constructor(
         private readonly productRepo:ProductRepo,
         private readonly brandRepo:BrandRepo,
-        private readonly categoryRepo:CategoryRepo
+        private readonly categoryRepo:CategoryRepo,
+        @Inject('REDIS_CLIENT') private readonly redis:RedisClientType
     ){}
 
     async createProduct(data:Partial<HProduct>){
@@ -67,5 +69,12 @@ export class ProductService {
         }})
         return data
     }
-    
+    async GetAllProductsWithRedis(){
+        console.log(0);
+        
+        const data=await this.productRepo.find({})
+        return {
+            data:data
+        }
+    }
 }

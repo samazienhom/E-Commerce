@@ -3,6 +3,7 @@ import { ProductService } from './product.service';
 import { AuthGuard, type authReq } from 'src/common/guards/auth-guard/auth-guard.guard';
 import {  FilesInterceptor } from '@nestjs/platform-express';
 import { storage } from 'src/common/utilis/multer/upload';
+import { CacheInterceptor } from 'src/common/interceptors/cache.interceptor';
 
 
 @Controller('product')
@@ -32,5 +33,10 @@ export class ProductController {
     @Get('get-all-products')
     async getAllProducts(){
         return {data: await this.productService.getAllProducts()}
+    }
+    @Get('products-with-redis')
+    @UseInterceptors(CacheInterceptor)
+    async testRedis(){
+        return this.productService.GetAllProductsWithRedis()
     }
 }

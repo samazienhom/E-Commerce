@@ -8,7 +8,7 @@ import { ZodPipes } from "src/common/pipes/zod/zod.pipe";
 import { User } from "src/DB/models/user.model";
 import { AuthGuard, AuthGuard as JwtAuthGuard } from "src/common/guards/auth-guard/auth-guard.guard";
 import { AuthGuard as PassportAuthGuard } from '@nestjs/passport';
-import { SuccessHandlerInterceptor } from "src/common/interceptors/success.handler.interceptors";
+import { SuccessHandlerInterceptor } from "src/common/interceptors/success.handler.interceptor";
 
 
 

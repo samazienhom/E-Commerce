@@ -13,10 +13,11 @@ import { ProductRepo } from 'src/DB/Repo/product.repo';
 import { ProductModel } from 'src/DB/models/product.model';
 import { CouponRepo } from 'src/DB/Repo/coupon.repo';
 import { CouponModel } from 'src/DB/models/coupon.model';
+import { PaymentService } from 'src/common/services/payment/payment.service';
 
 @Module({
   imports:[OrderModel,CartModel,UserModel,ProductModel,CouponModel],
-  providers: [OrderService,OrderRepo,UserRepo,CartRepo,JWTService,JWT,ProductRepo,CouponRepo],
+  providers: [OrderService,OrderRepo,UserRepo,CartRepo,JWTService,JWT,ProductRepo,CouponRepo,PaymentService],
   controllers: [OrderController]
 })
 export class OrderModule {}

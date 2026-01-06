@@ -1,12 +1,14 @@
-import { BadRequestException, Controller, NotFoundException, Post, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Controller, NotFoundException, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { AuthGuard, type authReq } from 'src/common/guards/auth-guard/auth-guard.guard';
 import { CouponRepo } from 'src/DB/Repo/coupon.repo';
+import { Types } from 'mongoose';
 
 @Controller('order')
 export class OrderController {
 
-    constructor(private readonly orderService: OrderService,
+    constructor(
+        private readonly orderService: OrderService,
         private readonly couponRepo: CouponRepo
     ) { }
 
@@ -44,5 +46,28 @@ export class OrderController {
         data
 
       }
+    }
+
+    @Post('checkout/:orderId')
+    @UseGuards(AuthGuard)
+    async createCheckoutSession(@Param('orderId') orderId:Types.ObjectId,@Req() req:authReq){
+        const userId=req.user._id
+        const session=await this.orderService.createCheckoutSession(
+            orderId,userId
+        )
+        
+          
+        return {data:session}
+    }
+     @Post('refund/:orderId')
+    @UseGuards(AuthGuard)
+    async createRefund(@Param('orderId') orderId:Types.ObjectId,@Req() req:authReq){
+        const userId=req.user._id
+        const refund=await this.orderService.createRefund(
+            orderId,userId
+        )
+        
+        
+        return {data:refund}
     }
 }

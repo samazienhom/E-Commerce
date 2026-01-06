@@ -61,35 +61,7 @@ cd e-commerce
 npm install
 `
 
-3. Set up environment variables:
-Create a .env file in the root directory with the following variables:
-
-`env
-PORT=3000
-DBURI=mongodb://localhost:27017/E-Commerce
-
-# Email configuration
-HOST=smtp.ethereal.email
-EMAIL_PORT=465
-EMAIL_USER=your-email@example.com
-EMAIL_PASS=your-email-password
-
-# JWT
-JWT_SECRET=your-jwt-secret-key
-
-# Google OAuth
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-GOOGLE_URL=http://localhost:3000/auth/google
-
-# Stripe
-STRIPE_SECRET=your-stripe-secret-key
-SUCCESS_URL=http://localhost:3000/api/payment/success
-CANCEL_URL=http://localhost:3000/api/payment/cancel
-PAYMENT_TOKEN=tok_visa
-`
-
-4. Start MongoDB and Redis services on your system.
+3. Start MongoDB and Redis services on your system.
 
 ## Running the Application
 
